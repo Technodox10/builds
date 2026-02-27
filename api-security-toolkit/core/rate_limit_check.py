@@ -1,5 +1,4 @@
 
-  
 '''
 Pseudocode for rate limit 
 goal: to check rate limiting on an endpoint
@@ -35,6 +34,70 @@ Response delay?
 Same token blocked?
 New token works?
 '''
+#def ratelimit(url):
+from datetime import datetime
 
+import requests
+import re
+
+sec = datetime.now().time().second 
+times = []
+def status(stat):
+ pattern = re.compile("[4^]")
+ for (key, value) in iter(stat.items()): 
+     if key == "status":
+       if value == 429:
+         print("Rate limit in place")
+       elif pattern.search(str(value)):
+          print("Unauthorised access ")   
+       elif times[len(times)-1] > times[len(times)-2]:
+         print("Possible Throttling")
+       else:
+          print("No rate limit")
+
+      
+def rate_limit(url):
+    time_after_3sec = sec + 3
+    time_after_15sec = sec + 15
+    time_after_30sec = sec + 30
+    stat_3 = {}
+    stat_15 = {}
+    stat_30 = {}
+    for i in range(time_after_3sec):
+      req = requests.get(url)
+      time_elapsed = (req.elapsed.seconds * 1e+6) + req.elapsed.microseconds
+      times.insert(i,time_elapsed)
+      stat_3 = {
+         "time" : i,
+         "status": req.status_code,
+         "elasped ": time_elapsed
+      }
+      status(stat_3)
+      
+
+    for j in range(time_after_15sec):
+       req = requests.get(url)
+       time_elapsed = (req.elapsed.seconds * 1e+6) + req.elapsed.microseconds 
+       times.insert(i,time_elapsed)
+       stat_15 = {
+         "time" : j,
+         "status": req.status_code,
+         "elapsed": time_elapsed
+      }
+       status(stat_15)
+    
+    for k in range(time_after_30sec):
+       req = requests.get(url)
+       time_elapsed = (req.elapsed.seconds * 1e+6) + req.elapsed.microseconds
+       times.insert(i,time_elapsed)
+       stat_30 = {
+         "time" : k,
+         "status": req.status_code,
+         "elapsed": time_elapsed
+      }
+       status(stat_30)
+    
+    
+        
 
   

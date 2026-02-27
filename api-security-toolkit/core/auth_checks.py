@@ -1,4 +1,7 @@
+
 import requests
+
+
 def no_auth_checks(url):
     r = requests.get(url)
     return {
